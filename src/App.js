@@ -1,56 +1,29 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
 import Header from './components/Header';
 import Main from './components/Main';
 import Loader from './components/Loader';
 import Error from './components/Error';
 import StartScreen from './components/StartScreen';
-
-const initialState = {
-  status: 'loading', //loading , error , ready , active , finished
-  error: '',
-  questions: [],
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'dataReceived':
-      return {
-        ...state,
-        status: 'ready',
-        questions: action.payload,
-      };
-    case 'startQuiz':
-      return {
-        ...state,
-        status: 'active',
-      };
-    case 'dataFailed':
-      return { ...state, status: 'error' };
-
-    default:
-      throw new Error('Unknown action');
-  }
-}
+import Question from './components/Question';
+import Progress from './components/Progress';
+import { useQuiz } from './contexts/QuizContext';
+import FinishScreen from './components/FinishScreen';
+import NextBtn from './components/NextBtn';
+import Timer from './components/Timer';
 
 function App() {
-  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
-  const numOfQuestions = questions.length;
-
-  useEffect(() => {
-    async function getQuestions() {
-      try {
-        const res = await fetch('http://localhost:8000/questions');
-        const data = await res.json();
-
-        dispatch({ type: 'dataReceived', payload: data });
-      } catch (error) {
-        dispatch({ type: 'dataFailed' });
-      }
-    }
-
-    getQuestions();
-  }, []);
+  const {
+    questions,
+    status,
+    index,
+    answer,
+    points,
+    dispatch,
+    numOfQuestions,
+    totalPoints,
+    highScore,
+  } = useQuiz();
 
   return (
     <div className="app">
@@ -63,7 +36,41 @@ function App() {
             numOfQuestions={numOfQuestions}
           />
         )}
+        {status === 'active' && (
+          <>
+            <Progress
+              points={points}
+              totalPoints={totalPoints}
+              index={index}
+              numOfQuestions={numOfQuestions}
+              answer={answer}
+            />
 
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              numOfQuestions={numOfQuestions}
+            />
+            {answer !== null && (
+              <NextBtn
+                dispatch={dispatch}
+                index={index}
+                numOfQuestions={numOfQuestions}
+              />
+            )}
+            <Timer numOfQuestions={numOfQuestions} dispatch={dispatch} />
+          </>
+        )}
+        {status === 'finished' && (
+          <FinishScreen
+            points={points}
+            totalPoints={totalPoints}
+            highScore={highScore}
+            dispatch={dispatch}
+          />
+        )}
         {status === 'error' && <Error />}
       </Main>
     </div>
