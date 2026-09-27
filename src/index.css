@@ -38,11 +38,11 @@ body {
 }
 
 .main {
-  width: 50rem;
+  width: min(50rem, 100%);
 }
 
 .app-header {
-  width: 66rem;
+  width: min(66rem, 100%);
   margin-bottom: 4rem;
   display: flex;
   align-items: center;
@@ -279,5 +279,43 @@ progress {
       0% 50%,
       50% 50%,
       100% 100%;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-header {
+    flex-direction: column;
+  }
+
+  .btn-ui {
+    float: none;
+    width: 100%;
+    margin-bottom: 1.2rem;
+  }
+
+  .timer {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 550px) {
+  html {
+    font-size: 50%;
+  }
+  .app-header {
+    text-align: center;
+    h1 {
+      font-size: 4.8rem;
+    }
+    img {
+      width: 12rem;
+    }
+  }
+
+  .answer {
+    transform: translateX(1.2rem);
   }
 }
