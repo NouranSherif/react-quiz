@@ -4,7 +4,7 @@ An interactive quiz app built with React, using `useReducer` and Context for sta
 
 ## Live Demo
 
-🔗 [Play the quiz](https://react-quiz-git-main-nouransherifs-projects.vercel.app/)
+🔗 [Play the quiz](https://react-quiz-phi-swart.vercel.app/)
 
 ![Preview](public/preview.png)
 
